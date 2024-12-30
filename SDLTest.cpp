@@ -9,13 +9,13 @@ const int SCREEN_HEIGHT = 600;
 int main(int argc, char* argv[]) {
 
     UIForm form1 = {"form1", true, true, {
-        { .type=label,  .title="TEST LABEL", .x=100, .y=100 },
-        { .type=button, .title="TEST BUTTON",.x=200, .y=100 }
+        { .type=label,  .title="TEST LABEL",  .rect={ .x=100, .y=100, .w=100, .h=30} },
+        { .type=button, .title="TEST BUTTON", .rect={ .x=250, .y=100, .w=100, .h=30} }
     }};
 
     UIForm form2 = {"form2", true, true, {
-        { .type=label,  .title="TEST LABEL", .x=100, .y=200 },
-        { .type=button, .title="TEST BUTTON",.x=200, .y=200 }
+        { .type=label,  .title="TEST LABEL",  .rect={ .x=100, .y=200, .w=100, .h=30} },
+        { .type=button, .title="TEST BUTTON", .rect={ .x=250, .y=200, .w=100, .h=30} }
     }};
 
 	Engine engine("SDLTest", {

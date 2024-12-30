@@ -132,7 +132,11 @@ public:
                 }
             }
 
-            SDL_SetRenderDrawColor(renderingContext.renderer, 0, 0, 0, 255);
+            SDL_SetRenderDrawColor(renderingContext.renderer,
+                                   renderingContext.windowBackgroundColor.r,
+                                   renderingContext.windowBackgroundColor.g,
+                                   renderingContext.windowBackgroundColor.b,
+                                   renderingContext.windowBackgroundColor.a);
             SDL_RenderClear(renderingContext.renderer);
 
             renderForms();
