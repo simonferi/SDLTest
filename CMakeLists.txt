@@ -11,8 +11,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)  # Ensure the standard is strictly enforced
 set(CMAKE_CXX_EXTENSIONS OFF)        # Disable compiler-specific extensions (optional)
 
 # Find SDL2 library
-find_package(SDL2 REQUIRED)
+#find_package(SDL2 REQUIRED)
 #find_package(SDL2_ttf REQUIRED)
+#find_package(SDL2_image REQUIRED)
 
 include_directories(${SDL2_INCLUDE_DIRS} wrapperlibrary/)
 
@@ -26,7 +27,7 @@ configure_file(config.h.in config.h)
 target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_BINARY_DIR}")
 
 # Link SDL2
-target_link_libraries(SDLTest ${SDL2_LIBRARIES} SDL2_ttf SDL2_image)
+target_link_libraries(SDLTest ${SDL2_LIBRARIES} SDL2 SDL2_ttf SDL2_image)
 
 
 #target_include_directories(SDLOpenFontExample PRIVATE ${SDL2_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS})
