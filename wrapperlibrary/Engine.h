@@ -11,6 +11,7 @@
 #include <SDL2/SDL_ttf.h>
 #include "UISystem.h"
 #include "Objects.h"
+#include "Resources.h"
 
 const char* DEFAULT_FONT = "OpenSans-Regular.ttf";
 const int DEFAULT_FONT_SIZE = 20;
@@ -20,6 +21,7 @@ constexpr int FRAME_DELAY = 1000 / TARGET_FPS;
 class Engine {
 private:
     UIRenderingContext renderingContext;
+    ResourceImages* resImages;
     std::unordered_map<std::string, UIForm*> forms;
     std::forward_list<GameObject*> objects;
     const std::string title;
@@ -39,21 +41,20 @@ public:
     void addForm(std::string formName, UIForm* form) { forms.insert({formName, form}); }
     std::unordered_map<std::string, UIForm*>* getForms() { return &forms; }
 
-    void addObject(GameObject* object) { objects.push_front(object); }
+    void setResourceImages(ResourceImages* resImages) {
+        this->resImages = resImages;
+    }
+
+    void addObject(GameObject* object) {
+        objects.push_front(object);
+    }
+
     std::forward_list<GameObject*>* getObjects() { return &objects; }
 
     void renderForms() {
         for (auto& [name, form]: forms) {
             if (form->isActive() && form->isVisible()) {
                 form->render(renderingContext);
-            }
-        }
-    }
-
-    void renderObjects() {
-        for (GameObject* object: objects) {
-            if (object->isActive()) {
-                object->render(renderingContext.renderer);
             }
         }
     }
@@ -96,12 +97,24 @@ public:
             return 1;
         }
 
+        if (resImages) {
+            resImages->loadImages(renderingContext.renderer);
+            for (auto object: objects) {
+                object->setResourceImage(resImages->get(object->resourceAlias));
+                // std::cout << "alias loaded:" << object->resourceAlias << std::endl;
+            }
+        }
+
         SDL_Event event;
         bool quit = false;
         bool isFullscreen = false;
+        Uint32 lastTime = SDL_GetTicks();
 
         while (!quit) {
-            Uint32 frameStart = SDL_GetTicks();
+            Uint32 currentTime = SDL_GetTicks();
+            float deltaTime = (currentTime - lastTime) / 1000.0f; // Convert milliseconds to seconds
+            lastTime = currentTime;
+
             int dX=0, dY=0;
             while (SDL_PollEvent(&event)) {
                 quit = (event.type == SDL_QUIT);
@@ -140,14 +153,19 @@ public:
             SDL_RenderClear(renderingContext.renderer);
 
             renderForms();
-            renderObjects();
+
+            for (auto object: objects) {
+                if (object->active) {
+                    object->update(deltaTime);
+                    if (object->resourceImage && object->resourceImage->texture) {
+                        object->render(renderingContext.renderer);
+                    }
+                }
+            }
 
             SDL_RenderPresent(renderingContext.renderer);
 
-            Uint32 frameTime = SDL_GetTicks() - frameStart;
-            if (frameTime < FRAME_DELAY) {
-                SDL_Delay(FRAME_DELAY - frameTime);
-            }
+            Uint32 frameTime = SDL_GetTicks() - currentTime;
         }
 
         std::cout << "****************" << std::endl;
