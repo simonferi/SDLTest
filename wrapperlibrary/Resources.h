@@ -5,13 +5,27 @@
 #include <stdexcept>
 #include <unordered_map>
 #include <SDL2/SDL_image.h>
+#include <toml.hpp>
 #include "Types.h"
+#include "Helper.h"
 
 class ResourceImages {
 private:
     std::unordered_map<std::string, ResourceImage> map;
 public:
-    ResourceImages() {};
+    // default constructor
+    ResourceImages() {}
+
+    // constructor with TOML file
+    ResourceImages(std::string tomlFile) {
+        const auto root    = toml::parse(tomlFile);
+        const auto records = toml::find<std::vector<image_record>>(root, "images");
+        for (auto& [alias, fileName, blendMode]: records) {
+            std::cout << "alias:" << alias << " fileName:" << fileName << " blendMode:" << blendMode << std::endl;
+            add(alias, Helper::absolutePath(fileName), (blendMode == "SDL_BLENDMODE_BLEND") ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE);
+        }
+    }
+
     ~ResourceImages() {
         for (const auto& [key, image]: map) {
             if (image.texture) {

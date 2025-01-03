@@ -1,6 +1,34 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <toml.hpp>
+
+struct image_record {
+    image_record(const toml::value& v):
+        alias    (toml::find_or<std::string> (v, "alias",     std::string(""))),
+        fileName (toml::find_or<std::string> (v, "fileName",  std::string(""))),
+        blendMode(toml::find_or<std::string> (v, "blendMode", std::string("SDL_BLENDMODE_BLEND")))
+        {}
+    std::string alias;
+    std::string fileName;
+    std::string blendMode;
+};
+
+struct object_record {
+    object_record(const toml::value& v):
+        alias(toml::find_or<std::string> (v, "alias", std::string(""))),
+        posX (toml::find_or<float>       (v, "posX",  0.0f)),
+        posY (toml::find_or<float>       (v, "posY",  0.0f)),
+        accX (toml::find_or<float>       (v, "accX",  0.0f)),
+        accY (toml::find_or<float>       (v, "accY",  0.0f)),
+        velX (toml::find_or<float>       (v, "velX",  0.0f)),
+        velY (toml::find_or<float>       (v, "velY",  0.0f))
+        {}
+    std::string alias;
+    float posX, posY, accX, accY, velX, velY;
+};
+
+
 typedef struct ResourceImage {
     std::string fileName;
     SDL_BlendMode blendMode;

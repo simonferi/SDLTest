@@ -13,6 +13,7 @@
 #include "Objects.h"
 #include "Resources.h"
 #include "Helper.h"
+#include "Types.h"
 
 const std::string DEFAULT_FONT = "resources/fonts/OpenSans-Regular.ttf";
 const int DEFAULT_FONT_SIZE = 20;
@@ -20,7 +21,7 @@ const int DEFAULT_FONT_SIZE = 20;
 class Engine {
 private:
     UIRenderingContext renderingContext;
-    ResourceImages* resImages;
+    ResourceImages resImages;
     std::unordered_map<std::string, UIForm*> forms;
     std::forward_list<GameObject*> objects;
     const std::string title;
@@ -36,12 +37,30 @@ public:
         if (TTF_initialized) { TTF_Quit(); }
         if (SDL_initialized) { SDL_Quit(); }
         // std::cout << "CEngine::~CEngine() ended" << std::endl;
+
+        for (auto object: objects) {
+            delete object;
+        }
     }
     void addForm(std::string formName, UIForm* form) { forms.insert({formName, form}); }
     std::unordered_map<std::string, UIForm*>* getForms() { return &forms; }
 
-    void setResourceImages(ResourceImages* resImages) {
-        this->resImages = resImages;
+    void loadResources(std::string tomlFile) {
+        const auto root = toml::parse(tomlFile);
+        const auto imageRecords = toml::find<std::vector<image_record>>(root, "images");
+        for (auto& [alias, fileName, blendMode]: imageRecords) {
+            // std::cout << "alias:" << alias << " fileName:" << fileName << " blendMode:" << blendMode << std::endl;
+            resImages.add(alias, Helper::absolutePath(fileName), (blendMode == "SDL_BLENDMODE_BLEND") ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE);
+        }
+
+        const auto objectRecords = toml::find<std::vector<object_record>>(root, "gameObjects");
+        for (auto& [alias, posX, posY, accX, accY, velX, velY]: objectRecords) {
+            GameObject* pObject = new GameObject(alias);
+            pObject->position     = { .x=posX, .y=posY };
+            pObject->acceleration = { .x=accX, .y=accY };
+            pObject->velocity     = { .x=velX, .y=velY };
+            objects.push_front(pObject);
+        }
     }
 
     void addObject(GameObject* object) {
@@ -96,12 +115,10 @@ public:
             return 1;
         }
 
-        if (resImages) {
-            resImages->loadImages(renderingContext.renderer);
-            for (auto object: objects) {
-                object->setResourceImage(resImages->get(object->resourceAlias));
-                // std::cout << "alias loaded:" << object->resourceAlias << std::endl;
-            }
+        resImages.loadImages(renderingContext.renderer);
+        for (auto object: objects) {
+            object->setResourceImage(resImages.get(object->resourceAlias));
+            // std::cout << "alias loaded:" << object->resourceAlias << std::endl;
         }
 
         SDL_Event event;

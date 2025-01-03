@@ -1,0 +1,27 @@
+images = [
+  { alias = "disk", fileName = "resources/images/disk.png", blendMode = "SDL_BLENDMODE_BLEND" },
+  { alias = "wall", fileName = "resources/images/wall.png", blendMode = "SDL_BLENDMODE_BLEND" }
+]
+
+gameObjects = [
+  { alias = "disk", posX=300.0, posY=300.0, accX=0.0, accY=10.0, velX=0.0, velY=-50.0 },
+  { alias = "disk", posX=320.0, posY=300.0 },
+
+  { alias = "wall", posX= 60.0, posY=150.0 },
+  { alias = "wall", posX= 92.0, posY=150.0 },
+  { alias = "wall", posX=124.0, posY=150.0 },
+  { alias = "wall", posX=156.0, posY=150.0 },
+  { alias = "wall", posX=188.0, posY=150.0 },
+
+  { alias = "wall", posX=160.0, posY=250.0 },
+  { alias = "wall", posX=192.0, posY=250.0 },
+  { alias = "wall", posX=224.0, posY=250.0 },
+  { alias = "wall", posX=256.0, posY=250.0 },
+  { alias = "wall", posX=288.0, posY=250.0 },
+
+  { alias = "wall", posX=260.0, posY=350.0 },
+  { alias = "wall", posX=292.0, posY=350.0 },
+  { alias = "wall", posX=324.0, posY=350.0 },
+  { alias = "wall", posX=356.0, posY=350.0 },
+  { alias = "wall", posX=388.0, posY=350.0 }
+]

@@ -2,6 +2,7 @@
 #define HELPER_H
 
 #include <string>
+#include <toml.hpp>
 
 class Helper {
 public:

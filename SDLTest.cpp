@@ -7,8 +7,8 @@
 // Screen dimensions
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
-const std::string DISK = "d";
-const std::string WALL = "w";
+const std::string DISK = "disk";
+const std::string WALL = "wall";
 
 int main(int argc, char* argv[]) {
 
@@ -30,37 +30,9 @@ int main(int argc, char* argv[]) {
     engine.addForm(form1.title, &form1);
     engine.addForm(form2.title, &form2);
 
-    ResourceImages resImages;
-    resImages.add(DISK, Helper::absolutePath("resources/images/disk.png"), SDL_BLENDMODE_BLEND);
-    resImages.add(WALL, Helper::absolutePath("resources/images/wall.png"), SDL_BLENDMODE_BLEND);
-    engine.setResourceImages(&resImages);
-
-    GameObject o1(DISK, { .x=300.0f, .y=300.0f });
-    o1.acceleration = { .x=  0.0f, .y= 10.0f };
-    o1.velocity     = { .x=  0.0f, .y=-50.0f };
-    engine.addObject(&o1);
-
-    GameObject o2(DISK, { .x=320.0f, .y=300.0f });
-    engine.addObject(&o2);
-
-    GameObject* staticObjects[80];
-    int j=0, k=0;
-    for ( int i=0; i<80; ++i ) {
-        GameObject* pObject = new GameObject(WALL);
-        j++;
-        if (i % 5 == 0) k++;
-        if (i % 20 == 0) j=0;
-        pObject->position = { .x=60.0f + j*32, .y=100.0f + k*20 };
-        engine.addObject(pObject);
-        staticObjects[i] = pObject;
-    }
+    engine.loadResources(Helper::absolutePath("resources/resources.toml"));
 
     int result = engine.run();
-
-    for ( int i=0; i<80; ++i ) {
-        delete staticObjects[i];
-        staticObjects[i] = nullptr;
-    }
 
     return result;
 }

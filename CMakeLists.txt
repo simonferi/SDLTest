@@ -15,7 +15,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)        # Disable compiler-specific extensions (opt
 #find_package(SDL2_ttf REQUIRED)
 #find_package(SDL2_image REQUIRED)
 
-include_directories(${SDL2_INCLUDE_DIRS} wrapperlibrary/)
+include_directories(${SDL2_INCLUDE_DIRS} wrapperlibrary/ toml11/single_include/ )
 
 # This project will output an executable file
 add_executable(${PROJECT_NAME} SDLTest.cpp)
