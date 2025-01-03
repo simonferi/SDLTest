@@ -5,14 +5,7 @@
 #include <stdexcept>
 #include <unordered_map>
 #include <SDL2/SDL_image.h>
-
-typedef struct ResourceImage {
-    std::string fileName;
-    SDL_BlendMode blendMode;
-    SDL_Texture* texture;
-    int w=0;
-    int h=0;
-} ResourceImage;
+#include "Types.h"
 
 class ResourceImages {
 private:

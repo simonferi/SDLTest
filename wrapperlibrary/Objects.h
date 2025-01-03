@@ -21,6 +21,9 @@ public:
     // constructor with resourceAlias argument
     GameObject(std::string resourceAlias): resourceAlias(resourceAlias) {}
 
+    // constructor with resourceAlias and position arguments
+    GameObject(std::string resourceAlias, SDL_FPoint position): resourceAlias(resourceAlias), position(position) {}
+
     // copy constructor
     GameObject(const GameObject& other):
         resourceAlias(other.resourceAlias),

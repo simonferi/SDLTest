@@ -12,11 +12,10 @@
 #include "UISystem.h"
 #include "Objects.h"
 #include "Resources.h"
+#include "Helper.h"
 
-const char* DEFAULT_FONT = "OpenSans-Regular.ttf";
+const std::string DEFAULT_FONT = "resources/fonts/OpenSans-Regular.ttf";
 const int DEFAULT_FONT_SIZE = 20;
-const int TARGET_FPS = 60;
-constexpr int FRAME_DELAY = 1000 / TARGET_FPS;
 
 class Engine {
 private:
@@ -53,7 +52,7 @@ public:
 
     void renderForms() {
         for (auto& [name, form]: forms) {
-            if (form->isActive() && form->isVisible()) {
+            if (form->active && form->visible) {
                 form->render(renderingContext);
             }
         }
@@ -91,7 +90,7 @@ public:
             return 1;
         }
 
-        renderingContext.defaultFont = TTF_OpenFont(DEFAULT_FONT, DEFAULT_FONT_SIZE);
+        renderingContext.defaultFont = TTF_OpenFont(Helper::absolutePath(DEFAULT_FONT).c_str(), DEFAULT_FONT_SIZE);
         if (!renderingContext.defaultFont) {
             std::cerr << "TTF_OpenFont Error: " << TTF_GetError() << std::endl;
             return 1;
@@ -134,6 +133,9 @@ public:
                     } else if (KEY_DOW && CTRL_DOWN && event.key.keysym.sym == SDLK_f) {
                         SDL_SetWindowFullscreen(renderingContext.window, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
                         isFullscreen = !isFullscreen;
+                        SDL_GetWindowSize(renderingContext.window,
+                                          &renderingContext.windowRect.w,
+                                          &renderingContext.windowRect.h);
                     } else if (KEY_DOW && ARROW_KEY) {
                         switch (event.key.keysym.sym) {
                             SDLK_RIGHT: dX =  1; break;
@@ -155,9 +157,12 @@ public:
             renderForms();
 
             for (auto object: objects) {
-                if (object->active) {
+                if (object && object->active) {
                     object->update(deltaTime);
-                    if (object->resourceImage && object->resourceImage->texture) {
+                    if (object->position.x < renderingContext.windowRect.w
+                        && object->position.y < renderingContext.windowRect.h
+                        && object->resourceImage
+                        && object->resourceImage->texture) {
                         object->render(renderingContext.renderer);
                     }
                 }
