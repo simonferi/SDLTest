@@ -25,8 +25,6 @@ private:
     std::unordered_map<std::string, UIForm*> forms;
     std::forward_list<GameObject*> objects;
     const std::string title;
-    bool SDL_initialized = false;
-    bool TTF_initialized = false;
 public:
     Engine(const std::string title, UIRenderingContext renderingContext): renderingContext(renderingContext), title(title) {}
     ~Engine() {
@@ -34,8 +32,8 @@ public:
         if (renderingContext.defaultFont) { TTF_CloseFont(renderingContext.defaultFont); }
         if (renderingContext.renderer) { SDL_DestroyRenderer(renderingContext.renderer); }
         if (renderingContext.window) { SDL_DestroyWindow(renderingContext.window); }
-        if (TTF_initialized) { TTF_Quit(); }
-        if (SDL_initialized) { SDL_Quit(); }
+        TTF_Quit();
+        SDL_Quit();
         // std::cout << "CEngine::~CEngine() ended" << std::endl;
 
         for (auto object: objects) {
@@ -78,36 +76,6 @@ public:
     }
 
     int run() {
-
-        if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-            std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
-            return 1;
-        }
-        SDL_initialized = true;
-
-        if (TTF_Init() != 0) {
-            std::cerr << "TTF_Init Error: " << TTF_GetError() << std::endl;
-            return 1;
-        }
-        TTF_initialized = true;
-
-        renderingContext.window = SDL_CreateWindow(
-            title.c_str(),
-            renderingContext.windowRect.x,
-            renderingContext.windowRect.y,
-            renderingContext.windowRect.w,
-            renderingContext.windowRect.h,
-            renderingContext.windowFlags);
-        if (!renderingContext.window) {
-            std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
-            return 1;
-        }
-
-        renderingContext.renderer = SDL_CreateRenderer(renderingContext.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-        if (!renderingContext.renderer) {
-            std::cerr << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
-            return 1;
-        }
 
         renderingContext.defaultFont = TTF_OpenFont(Helper::absolutePath(DEFAULT_FONT).c_str(), DEFAULT_FONT_SIZE);
         if (!renderingContext.defaultFont) {
@@ -177,7 +145,9 @@ public:
                 if (object && object->active) {
                     object->update(deltaTime);
                     if (object->position.x < renderingContext.windowRect.w
+                        && (static_cast<int>(object->position.x) + object->dstRect.w) > 0
                         && object->position.y < renderingContext.windowRect.h
+                        && (static_cast<int>(object->position.y) + object->dstRect.h) > 0
                         && object->resourceImage
                         && object->resourceImage->texture) {
                         object->render(renderingContext.renderer);

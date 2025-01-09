@@ -4,7 +4,9 @@ images = [
 ]
 
 gameObjects = [
-  { alias = "disk", posX=300.0, posY=300.0, accX=0.0, accY=10.0, velX=0.0, velY=-50.0 },
+  { alias = "disk", posX=300.0, posY=300.0, accX=0.0, accY=25.0, velX=-8.0, velY=-50.0 },
+  { alias = "disk", posX=330.0, posY=250.0, accX=0.0, accY=30.0, velX= 0.0, velY=-60.0 },
+  { alias = "disk", posX=360.0, posY=350.0, accX=0.0, accY=18.0, velX=12.0, velY=-40.0 },
   { alias = "disk", posX=320.0, posY=300.0 },
 
   { alias = "wall", posX= 60.0, posY=150.0 },

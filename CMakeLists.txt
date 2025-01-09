@@ -29,7 +29,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_BINARY_DIR}")
 # Link SDL2
 target_link_libraries(SDLTest ${SDL2_LIBRARIES} SDL2 SDL2_ttf SDL2_image)
 
-set_target_properties(SDLTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+# set_target_properties(SDLTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
 
 #target_include_directories(SDLOpenFontExample PRIVATE ${SDL2_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS})
 #target_link_libraries(SDLOpenFontExample PRIVATE ${SDL2_LIBRARIES} ${SDL2_TTF_LIBRARIES})
